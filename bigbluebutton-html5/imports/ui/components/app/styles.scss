@@ -26,7 +26,8 @@
 
   font-size: 1.5rem;
   padding: var(--bars-padding) var(--bars-padding) 0 var(--bars-padding);
-  height: 7rem;
+  height: 3rem;
+  background-color: black;
 }
 
 .wrapper {
@@ -199,6 +200,7 @@
   margin: 0 0 0 var(--panel-margin-right);
   overflow: hidden;
   z-index: 0;
+  background-color: #E7E7E7;
 
   [dir="rtl"] & {
     margin: 0 var(--panel-margin-right) 0 0;

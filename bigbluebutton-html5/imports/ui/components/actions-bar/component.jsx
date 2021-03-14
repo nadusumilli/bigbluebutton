@@ -6,8 +6,11 @@ import ActionsDropdown from './actions-dropdown/component';
 import QuickPollDropdown from './quick-poll-dropdown/component';
 import AudioControlsContainer from '../audio/audio-controls/container';
 import JoinVideoOptionsContainer from '../video-provider/video-button/container';
+import UploadPresentationContainer from '../presentation/presentation-button/container';
 import CaptionsButtonContainer from '/imports/ui/components/actions-bar/captions/container';
 import PresentationOptionsContainer from './presentation-options/component';
+import ExternalVideoButtonContainer from '../external-video-player/external-video-button/container';
+// import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 
 class ActionsBar extends PureComponent {
   render() {
@@ -57,6 +60,7 @@ class ActionsBar extends PureComponent {
             isMeteorConnected,
           }}
           />
+
           {isPollingEnabled
             ? (
               <QuickPollDropdown
@@ -76,7 +80,10 @@ class ActionsBar extends PureComponent {
             : null
           }
         </div>
+
         <div className={cx(actionBarClasses)}>
+          {amIPresenter && <UploadPresentationContainer amIPresenter />}
+          {isSharingVideo && <ExternalVideoButtonContainer isSharingVideo />}
           <AudioControlsContainer />
           {enableVideo
             ? (

@@ -324,13 +324,13 @@ class App extends Component {
       customStyle, customStyleUrl, openPanel,
     } = this.props;
     return (
-      <main className={styles.main}>
+      <main dir="rtl" className={styles.main}>
         {this.renderActivityCheck()}
         {this.renderUserInformation()}
         <BannerBarContainer />
         <NotificationsBarContainer />
         <section className={styles.wrapper}>
-          <div className={openPanel ? styles.content : styles.noPanelContent}>
+          <div className={openPanel ? `${styles.content} this is crazy` : styles.noPanelContent}>
             {this.renderNavBar()}
             {this.renderMedia()}
             {this.renderActionsBar()}
