@@ -33,6 +33,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-top: -5px;
 }
 
 .right {
@@ -44,9 +45,14 @@
   flex: 1;
 }
 
+.logo{
+  height: 30px;
+  margin-top: -10px;
+}
+
 .presentationTitle {
   font-weight: 200;
-  color: var(--color-white);
+  color: var(--color-black);
   font-size: var(--font-size-base);
   margin: 0;
   padding: 0;
@@ -80,7 +86,7 @@
 .arrowLeft {
   position: absolute;
   font-size: var(--arrow-size);
-  color: var(--color-white);
+  color: var(--color-black);
 }
 
 .arrowLeft {
@@ -113,7 +119,7 @@
   &:focus {
     span {
       background-color: transparent !important;
-      color: var(--color-white) !important;
+      color: var(--color-black) !important;
       opacity: .75;
     }
   }
