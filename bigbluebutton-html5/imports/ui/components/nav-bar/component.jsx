@@ -36,6 +36,16 @@ const defaultProps = {
 };
 
 class NavBar extends PureComponent {
+  static handleToggleUserList() {
+    Session.set(
+      'openPanel',
+      Session.get('openPanel') !== ''
+        ? ''
+        : 'userlist',
+    );
+    Session.set('idChatOpen', '');
+  }
+
   render() {
     const {
       hasUnreadMessages,
