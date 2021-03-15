@@ -28,6 +28,11 @@
   }
 }
 
+.userActionsWrapper{
+  display: flex;
+  flex-direction: row;
+}
+
 .chatListItemLink {
   display: flex;
   flex-grow: 1;
