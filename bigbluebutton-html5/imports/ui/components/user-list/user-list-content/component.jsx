@@ -49,6 +49,7 @@ class UserContent extends PureComponent {
 
     return (
       <div
+        dir="ltr"
         data-test="userListContent"
         className={styles.content}
         role="complementary"
