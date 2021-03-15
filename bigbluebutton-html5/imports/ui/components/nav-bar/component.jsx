@@ -36,33 +36,6 @@ const defaultProps = {
 };
 
 class NavBar extends PureComponent {
-  // static handleToggleUserList() {
-  //   Session.set(
-  //     'openPanel',
-  //     Session.get('openPanel') !== ''
-  //       ? ''
-  //       : 'userlist',
-  //   );
-  //   Session.set('idChatOpen', '');
-  // }
-
-  // componentDidMount() {
-  //   const {
-  //     processOutsideToggleRecording,
-  //     connectRecordingObserver,
-  //   } = this.props;
-
-  //   if (Meteor.settings.public.allowOutsideCommands.toggleRecording
-  //     || getFromUserSettings('bbb_outside_toggle_recording', false)) {
-  //     connectRecordingObserver();
-  //     window.addEventListener('message', processOutsideToggleRecording);
-  //   }
-  // }
-
-  // componentWillUnmount() {
-  //   clearInterval(this.interval);
-  // }
-
   render() {
     const {
       hasUnreadMessages,

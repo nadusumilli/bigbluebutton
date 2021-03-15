@@ -11,6 +11,7 @@ import CaptionsButtonContainer from '/imports/ui/components/actions-bar/captions
 import PresentationOptionsContainer from './presentation-options/component';
 import ExternalVideoButtonContainer from '../external-video-player/external-video-button/container';
 import PollingButtonContainer from '../polling/polling-button/container';
+import RecordingIndicator from './recording-indicator/container';
 // import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 
 class ActionsBar extends PureComponent {
@@ -38,6 +39,7 @@ class ActionsBar extends PureComponent {
       isPollingEnabled,
       isThereCurrentPresentation,
       allowExternalVideo,
+      mountModal,
     } = this.props;
 
     const actionBarClasses = {};
@@ -88,6 +90,14 @@ class ActionsBar extends PureComponent {
           {amIPresenter && <UploadPresentationContainer amIPresenter />}
           {amIPresenter && allowExternalVideo && <ExternalVideoButtonContainer isSharingVideo />}
           {amIPresenter && isPollingEnabled && <PollingButtonContainer isPollingEnabled />}
+          {amIModerator
+            && (
+            <RecordingIndicator
+              mountModal={mountModal}
+              amIModerator={amIModerator}
+            />
+            )
+          }
           <AudioControlsContainer />
           {enableVideo
             ? (
