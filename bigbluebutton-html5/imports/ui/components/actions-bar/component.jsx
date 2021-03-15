@@ -10,6 +10,7 @@ import UploadPresentationContainer from '../presentation/presentation-button/con
 import CaptionsButtonContainer from '/imports/ui/components/actions-bar/captions/container';
 import PresentationOptionsContainer from './presentation-options/component';
 import ExternalVideoButtonContainer from '../external-video-player/external-video-button/container';
+import PollingButtonContainer from '../polling/polling-button/container';
 // import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 
 class ActionsBar extends PureComponent {
@@ -48,6 +49,7 @@ class ActionsBar extends PureComponent {
     return (
       <div className={styles.actionsbar}>
         <div className={styles.left}>
+          {amIModerator && (
           <ActionsDropdown {...{
             amIPresenter,
             amIModerator,
@@ -60,6 +62,7 @@ class ActionsBar extends PureComponent {
             isMeteorConnected,
           }}
           />
+          )}
 
           {isPollingEnabled
             ? (
@@ -83,7 +86,8 @@ class ActionsBar extends PureComponent {
 
         <div className={cx(actionBarClasses)}>
           {amIPresenter && <UploadPresentationContainer amIPresenter />}
-          {isSharingVideo && <ExternalVideoButtonContainer isSharingVideo />}
+          {amIPresenter && allowExternalVideo && <ExternalVideoButtonContainer isSharingVideo />}
+          {amIPresenter && isPollingEnabled && <PollingButtonContainer isPollingEnabled />}
           <AudioControlsContainer />
           {enableVideo
             ? (
