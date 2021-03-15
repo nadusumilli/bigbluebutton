@@ -1,0 +1,24 @@
+.userListHeaderWrapper{
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid lightgray;
+    line-height: 8px;
+}
+
+.chat{
+    flex: 1;
+    margin: 0 10px 10px 10px;
+    margin-left: 40px;
+    margin-top: 7px;
+    cursor: pointer;
+}
+
+.chat::hover {
+    color: grey;
+}
+
+.participants{
+    flex: 1;
+    margin: 0 10px 10px 10px;
+    cursor: pointer;
+}

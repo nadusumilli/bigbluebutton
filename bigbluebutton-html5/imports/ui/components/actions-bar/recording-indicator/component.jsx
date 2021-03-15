@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import RecordingContainer from '/imports/ui/components/recording/container';
+import { withModalMounter } from '/imports/ui/components/modal/service';
 import humanizeSeconds from '/imports/utils/humanizeSeconds';
 import Tooltip from '/imports/ui/components/tooltip/component';
 import PropTypes from 'prop-types';
@@ -240,4 +241,4 @@ class RecordingIndicator extends PureComponent {
 RecordingIndicator.propTypes = propTypes;
 RecordingIndicator.defaultProps = defaultProps;
 
-export default injectIntl(RecordingIndicator);
+export default withModalMounter(injectIntl(RecordingIndicator));

@@ -122,7 +122,7 @@ class UserMessages extends PureComponent {
     return (
       <div className={styles.messages}>
         <div className={styles.container}>
-          {
+          {/* {
             !compact ? (
               <h2 className={styles.smallTitle}>
                 {intl.formatMessage(intlMessages.messagesTitle)}
@@ -130,7 +130,7 @@ class UserMessages extends PureComponent {
             ) : (
               <hr className={styles.separator} />
             )
-          }
+          } */}
         </div>
         <div
           role="tabpanel"

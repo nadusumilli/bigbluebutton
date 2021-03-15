@@ -37,13 +37,15 @@ const defaultProps = {
 
 class NavBar extends PureComponent {
   static handleToggleUserList() {
-    Session.set(
-      'openPanel',
-      Session.get('openPanel') !== ''
-        ? ''
-        : 'userlist',
-    );
-    Session.set('idChatOpen', '');
+    let panelName = Session.get('openPanel');
+    if(panelName === 'chat' || panelName === 'userList'){
+      Session.set('openPanel', '')
+      Session.set('idChatOpen', '');
+    }
+    else{
+      Session.set('openPanel', Session.get('openPanel')  || 'userlist');
+    }
+    // Session.set('idChatOpen', '');
   }
 
   render() {

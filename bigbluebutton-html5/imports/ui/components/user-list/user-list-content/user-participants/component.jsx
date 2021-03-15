@@ -171,7 +171,7 @@ class UserParticipants extends Component {
     } = this.props;
 
     return (
-      <div className={styles.userListColumn}>
+      <div className={styles.userListColumn} dir="rtl">
         {
           !compact
             ? (

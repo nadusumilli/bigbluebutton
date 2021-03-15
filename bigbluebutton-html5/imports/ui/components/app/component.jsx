@@ -209,8 +209,9 @@ class App extends Component {
     const { enableResize } = this.state;
     const { openPanel, isRTL } = this.props;
 
+    console.log(openPanel);
     return (
-      <PanelManager
+      openPanel !== "chat" && <PanelManager
         {...{
           openPanel,
           enableResize,
