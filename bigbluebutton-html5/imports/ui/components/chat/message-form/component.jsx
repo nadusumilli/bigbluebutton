@@ -275,7 +275,6 @@ class MessageForm extends PureComponent {
         ref={(ref) => { this.form = ref; }}
         className={cx(className, styles.form)}
         onSubmit={this.handleSubmit}
-        dir="ltr"
       >
         <div className={styles.wrapper}>
           <Button
