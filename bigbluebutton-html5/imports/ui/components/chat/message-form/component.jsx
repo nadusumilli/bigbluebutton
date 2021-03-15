@@ -275,8 +275,22 @@ class MessageForm extends PureComponent {
         ref={(ref) => { this.form = ref; }}
         className={cx(className, styles.form)}
         onSubmit={this.handleSubmit}
+        dir="ltr"
       >
         <div className={styles.wrapper}>
+          <Button
+            hideLabel
+            circle
+            className={styles.sendButton}
+            aria-label={intl.formatMessage(messages.submitLabel)}
+            type="submit"
+            disabled={disabled}
+            label={intl.formatMessage(messages.submitLabel)}
+            color="primary"
+            icon="send"
+            onClick={() => {}}
+            data-test="sendMessageButton"
+          />
           <TextareaAutosize
             className={styles.input}
             id="message-input"
@@ -293,19 +307,6 @@ class MessageForm extends PureComponent {
             value={message}
             onChange={this.handleMessageChange}
             onKeyDown={this.handleMessageKeyDown}
-          />
-          <Button
-            hideLabel
-            circle
-            className={styles.sendButton}
-            aria-label={intl.formatMessage(messages.submitLabel)}
-            type="submit"
-            disabled={disabled}
-            label={intl.formatMessage(messages.submitLabel)}
-            color="primary"
-            icon="send"
-            onClick={() => {}}
-            data-test="sendMessageButton"
           />
         </div>
         <TypingIndicatorContainer {...{ error }} />
