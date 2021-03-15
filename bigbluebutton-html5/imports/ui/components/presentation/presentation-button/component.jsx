@@ -45,6 +45,7 @@ const UploadPresentationButton = ({
       onClick={handleOnClick}
       hideLabel
       color={!amIPresenter ? 'primary' : 'default'}
+      ghost={amIPresenter}
       data-test="uploadPresentation"
       icon="presentation"
       size="lg"
