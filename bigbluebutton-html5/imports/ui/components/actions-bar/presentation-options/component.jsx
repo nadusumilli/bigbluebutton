@@ -32,7 +32,7 @@ const PresentationOptionsContainer = ({ intl, toggleSwapLayout, isThereCurrentPr
       label={intl.formatMessage(intlMessages.restorePresentationLabel)}
       description={intl.formatMessage(intlMessages.restorePresentationDesc)}
       color="default"
-      ghost={true}
+      ghost
       hideLabel
       circle
       size="lg"

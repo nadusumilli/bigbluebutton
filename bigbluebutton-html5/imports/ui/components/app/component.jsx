@@ -211,7 +211,8 @@ class App extends Component {
 
     console.log(openPanel);
     return (
-      openPanel !== "chat" && <PanelManager
+      openPanel !== 'chat' && (
+      <PanelManager
         {...{
           openPanel,
           enableResize,
@@ -219,6 +220,7 @@ class App extends Component {
         }}
         shouldAriaHide={this.shouldAriaHide}
       />
+      )
     );
   }
 

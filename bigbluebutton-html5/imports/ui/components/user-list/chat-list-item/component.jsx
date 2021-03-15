@@ -40,22 +40,22 @@ const propTypes = {
   chatPanelOpen: PropTypes.bool.isRequired,
   shortcuts: PropTypes.string,
   isSameTabEnabled: PropTypes.bool,
-  updateRenderId: PropTypes.func
+  updateRenderId: PropTypes.func,
 };
 
 const defaultProps = {
   shortcuts: '',
   isSameTabEnabled: false,
-  updateRenderId: () => {}
+  updateRenderId: () => {},
 };
 
 const handleClickToggleChat = (id, isSameTabEnabled, updateRenderId) => {
-  if(isSameTabEnabled){
+  if (isSameTabEnabled) {
     console.log(isSameTabEnabled);
     Session.set('openPanel', 'userList');
     Session.set('idChatOpen', id);
     updateRenderId(id);
-  }else{
+  } else {
     Session.set(
       'openPanel',
       Session.get('openPanel') === 'chat' && Session.get('idChatOpen') === id
@@ -80,7 +80,7 @@ const ChatListItem = (props) => {
     shortcuts: TOGGLE_CHAT_PUB_AK,
     chatPanelOpen,
     isSameTabEnabled,
-    updateRenderId
+    updateRenderId,
   } = props;
 
   const isCurrentChat = chat.userId === activeChatId && chatPanelOpen;

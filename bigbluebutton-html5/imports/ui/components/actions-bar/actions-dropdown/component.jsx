@@ -213,7 +213,7 @@ class ActionsDropdown extends PureComponent {
             label={intl.formatMessage(intlMessages.actionsLabel)}
             icon="plus"
             color="default"
-            ghost={true}
+            ghost
             size="lg"
             circle
             onClick={() => null}
