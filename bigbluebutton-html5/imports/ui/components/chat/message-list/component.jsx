@@ -106,7 +106,7 @@ class MessageList extends Component {
     return false;
   }
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(nextProps) {
     const {
       chatId,
     } = this.props;

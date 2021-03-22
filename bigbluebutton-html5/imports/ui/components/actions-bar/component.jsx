@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import cx from 'classnames';
 import { styles } from './styles.scss';
 import DesktopShare from './desktop-share/component';
-import ActionsDropdown from './actions-dropdown/component';
+import RaiseHandButtonContainer from './raise-hand/container';
 import QuickPollDropdown from './quick-poll-dropdown/component';
 import AudioControlsContainer from '../audio/audio-controls/container';
 import JoinVideoOptionsContainer from '../video-provider/video-button/container';
@@ -12,6 +12,7 @@ import PresentationOptionsContainer from './presentation-options/component';
 import ExternalVideoButtonContainer from '../external-video-player/external-video-button/container';
 import PollingButtonContainer from '../polling/polling-button/container';
 import RecordingIndicator from './recording-indicator/container';
+import EndMeetingButton from './end-meeting/component';
 // import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
 
 class ActionsBar extends PureComponent {
@@ -26,13 +27,10 @@ class ActionsBar extends PureComponent {
       enableVideo,
       isLayoutSwapped,
       toggleSwapLayout,
-      handleTakePresenter,
       intl,
       currentSlidHasContent,
       parseCurrentSlideContent,
-      isSharingVideo,
       screenShareEndAlert,
-      stopExternalVideoShare,
       screenshareDataSavingSetting,
       isCaptionsAvailable,
       isMeteorConnected,
@@ -51,20 +49,7 @@ class ActionsBar extends PureComponent {
     return (
       <div className={styles.actionsbar}>
         <div className={styles.left}>
-          {amIModerator && (
-          <ActionsDropdown {...{
-            amIPresenter,
-            amIModerator,
-            isPollingEnabled,
-            allowExternalVideo,
-            handleTakePresenter,
-            intl,
-            isSharingVideo,
-            stopExternalVideoShare,
-            isMeteorConnected,
-          }}
-          />
-          )}
+          <EndMeetingButton amIModerator />
 
           {isPollingEnabled
             ? (
@@ -98,6 +83,7 @@ class ActionsBar extends PureComponent {
             />
             )
           }
+          <RaiseHandButtonContainer />
           <AudioControlsContainer />
           {enableVideo
             ? (

@@ -8,9 +8,12 @@ import Users from '/imports/api/users';
 
 const UserContentContainer = props => <UserContent {...props} />;
 
-export default withTracker(() => ({
+export default withTracker(() => {
+  const chatId = Session.get('idChatOpen') ?? '';
+  return {
   pollIsOpen: Session.equals('isPollOpen', true),
   forcePollOpen: Session.equals('forcePollOpen', true),
+  chatId,
   currentUser: Users.findOne({ userId: Auth.userID }, {
     fields: {
       userId: 1,
@@ -25,4 +28,4 @@ export default withTracker(() => ({
     approved: false,
     denied: false,
   }).fetch(),
-}))(UserContentContainer);
+}})(UserContentContainer);

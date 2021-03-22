@@ -6,6 +6,7 @@ import Tooltip from '/imports/ui/components/tooltip/component';
 import PropTypes from 'prop-types';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
 import { styles } from './styles';
+import Button from '../../button/component';
 
 const intlMessages = defineMessages({
   notificationRecordingStart: {
@@ -133,29 +134,6 @@ class RecordingIndicator extends PureComponent {
       document.activeElement.blur();
     };
 
-    const recordingIndicatorIcon = (
-      <span className={styles.recordingIndicatorIcon}>
-        <svg xmlns="http://www.w3.org/2000/svg" height="100%" version="1" viewBox="0 0 20 20">
-          <g stroke="#000" fill="#FFF" strokeLinecap="square">
-            <circle
-              fill="none"
-              strokeWidth="1"
-              r="9"
-              cx="10"
-              cy="10"
-            />
-            <circle
-              stroke={recording ? '#F00' : '#000'}
-              fill={recording ? '#F00' : '#000'}
-              r="4"
-              cx="10"
-              cy="10"
-            />
-          </g>
-        </svg>
-      </span>
-    );
-
     const showButton = amIModerator && allowStartStopRecording;
 
     const recordMeetingButton = (
@@ -165,22 +143,19 @@ class RecordingIndicator extends PureComponent {
         role="button"
         tabIndex={0}
         key="recording-toggle"
-        onClick={recordingToggle}
-        onKeyPress={recordingToggle}
       >
-        {recordingIndicatorIcon}
-
-        <div className={styles.presentationTitle}>
-          {recording
-            ? (
-              <span className={styles.visuallyHidden}>
-                {`${intl.formatMessage(intlMessages.recordingAriaLabel)} ${humanizeSeconds(time)}`}
-              </span>
-            ) : null
-          }
-          {recording
-            ? <span aria-hidden>{humanizeSeconds(time)}</span> : <span>{recordTitle}</span>}
-        </div>
+        <Button
+          icon="record"
+          label={recordTitle}
+          circle
+          ghost
+          color="default"
+          size="lg"
+          hideLabel
+          className={styles.button}
+          onClick={recordingToggle}
+          onKeyPress={recordingToggle}
+        />
       </div>
     );
 
@@ -211,8 +186,18 @@ class RecordingIndicator extends PureComponent {
                   : intlMessages.notificationRecordingStop)}`}
                 className={styles.recordingStatusViewOnly}
               >
-                {recordingIndicatorIcon}
-
+                <Button
+                  icon="record"
+                  label={recordTitle}
+                  circle
+                  ghost
+                  color="default"
+                  size="lg"
+                  hideLabel
+                  className={styles.button}
+                  onClick={recordingToggle}
+                  onKeyPress={recordingToggle}
+                />
                 {recording
                   ? <div className={styles.presentationTitle}>{humanizeSeconds(time)}</div> : null}
               </div>
@@ -220,20 +205,6 @@ class RecordingIndicator extends PureComponent {
           )}
         </div>
       </Fragment>
-
-    // <Button
-    // className={styles.button}
-    // icon="presentation"
-    // label={intl.formatMessage(intlMessages.restorePresentationLabel)}
-    // description={intl.formatMessage(intlMessages.restorePresentationDesc)}
-    // color="primary"
-    // hideLabel
-    // circle
-    // size="lg"
-    // onClick={toggleSwapLayout}
-    // id="restore-presentation"
-    // disabled={!isThereCurrentPresentation}
-    // />
     );
   }
 }

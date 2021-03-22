@@ -25,6 +25,7 @@ const propTypes = {
   pollIsOpen: PropTypes.bool.isRequired,
   forcePollOpen: PropTypes.bool.isRequired,
   requestUserInformation: PropTypes.func.isRequired,
+  chatId: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -37,17 +38,16 @@ class UserContent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      renderChat: !!Session.get('idChatOpen'),
+      renderChat: !!props.chatId,
     };
-    this.updateRenderChat = this.updateRenderChat.bind(this);
   }
 
-  updateRenderChat(id) {
-    console.log(id);
-    this.setState({ renderChat: !!id });
+  componentDidUpdate(nextProps) {
+    const { chatId } = nextProps;
+    this.setState({ renderChat: !!Session.get('idChatOpen') });
   }
 
-  renderPaticipants(renderChat) {
+  renderPaticipants() {
     const {
       pollIsOpen,
       forcePollOpen,
@@ -60,8 +60,6 @@ class UserContent extends PureComponent {
       compact,
       roving,
     } = this.props;
-    console.log('Hello There', renderChat);
-    // if(renderChat) return null;
     return (
       <div className="participants">
         {currentUser.role === ROLE_MODERATOR
@@ -117,10 +115,11 @@ class UserContent extends PureComponent {
       roving,
       isPublicChat,
       activeChats,
+      chatId,
     } = this.props;
     const { renderChat } = this.state;
 
-    const renderParts = this.renderPaticipants(renderChat);
+    const renderParts = this.renderPaticipants();
 
     return (
       <div
@@ -130,13 +129,13 @@ class UserContent extends PureComponent {
         role="complementary"
       >
         <UserListHeader
-          updateRenderChat={this.updateRenderChat}
           {...{
             ...(CHAT_ENABLED && { isPublicChat }),
             ...(CHAT_ENABLED && { activeChats }),
             ...(CHAT_ENABLED && { compact }),
             intl,
             roving,
+            chatId,
           }}
         />
         <hr className={styles.headerDivider} />
@@ -152,8 +151,8 @@ class UserContent extends PureComponent {
           />
           ) : null
         } */}
-        {renderChat ? <ChatContainer /> : null}
-        {renderParts}
+        {renderChat && <ChatContainer />}
+        {!renderChat && renderParts}
       </div>
     );
   }

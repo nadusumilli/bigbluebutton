@@ -3,36 +3,52 @@ import PropTypes from 'prop-types';
 import ChatIcon from "../../chat-list-item/chat-icon/component"
 // import ChatAvatar from "../../chat-list-item/chat-avatar/component"
 // import ChatUnreadCounter from "../../chat-list-item/chat-unread-messages/component"
+import Dropdown from '/imports/ui/components/dropdown/component';
+import Button from '/imports/ui/components/button/component';
+import DropdownTrigger from '/imports/ui/components/dropdown/trigger/component';
+import DropdownContent from '/imports/ui/components/dropdown/content/component';
+import DropdownList from '/imports/ui/components/dropdown/list/component';
+import DropdownListItem from '/imports/ui/components/dropdown/list/item/component';
+import withShortcutHelper from '/imports/ui/components/shortcut-help/service';
 import ChatListItemContainer from '../../chat-list-item/container';
 import { Session } from 'meteor/session';
+import { intlShape, defineMessages } from 'react-intl';
 import { styles } from '/imports/ui/components/user-list/user-list-content/user-list-header-content/styles';
 
 const propTypes = {
     activeChats: PropTypes.arrayOf(String).isRequired,
     isPublicChat: PropTypes.func.isRequired,
     compact: PropTypes.bool,
-    updateRenderChat:  PropTypes.func.isRequired
+    shortcuts: PropTypes.string,
+    intl: intlShape.isRequired,
 }
 
+const CHAT_CONFIG = Meteor.settings.public.chat;
+const CHAT_ENABLED = CHAT_CONFIG.enabled;
+const PUBLIC_CHAT_ID = CHAT_CONFIG.public_id;
+
 const defaultProps = {
-    compact: false
+    compact: false,
+    shortcuts: ''
 }
+
+const intlMessages = defineMessages({
+    actionsLabel: {
+      id: 'app.actionsBar.actionsDropdown.actionsLabel',
+      description: 'Actions button label',
+    },
+});
 
 class UserListHeader extends PureComponent {
     constructor(props){
         super(props);
         this.activeChatRefs = []
-        this.updateRenderId = this.updateRenderId.bind(this);
+        this.setSessionToUserList = this.setSessionToUserList.bind(this);
     }
 
     setSessionToUserList() {
-        Session.set('openPanel','userlist');
         Session.set('idChatOpen', '');
-    }
-
-    updateRenderId(id){
-        const { updateRenderChat } = this.props;
-        updateRenderChat(id);
+        Session.set('openPanel','userlist');
     }
 
     renderChatItems = () => {
@@ -45,29 +61,53 @@ class UserListHeader extends PureComponent {
         let index = -1;
     
         return activeChats.map(chat => (
-            <div ref={(node) => { this.activeChatRefs[index += 1] = node; }} key={chat.userId}>
-                <ChatListItemContainer
-                    isPublicChat={isPublicChat}
-                    compact={compact}
-                    chat={chat}
-                    tabIndex={-1}
-                    isSameTabEnabled={true}
-                    updateRenderId={this.updateRenderId}
-                />
-            </div>
+            <DropdownListItem label={chat.name} ref={(node) => { this.activeChatRefs[index += 1] = node; }} key={chat.userId}>
+                <div>
+                    <ChatListItemContainer
+                        isPublicChat={isPublicChat}
+                        compact={compact}
+                        chat={chat}
+                        tabIndex={-1}
+                        isSameTabEnabled={true}
+                        activeChatId={chat.userId}
+                    />
+                </div>
+            </DropdownListItem>
         ));
     }
 
     render() {
-        const {activeChats} = this.props;
+        const {
+            activeChats, 
+            shortcuts: OPEN_ACTIONS_AK,
+            intl
+        } = this.props;
 
         const renderChatItem = this.renderChatItems();
 
         return(
             <div className={styles.userListHeaderWrapper}>
-                <span className={styles.chat} onClick={this.handleChatClick}>
-                    <ChatIcon icon='chat' />
-                    {activeChats.length > 1 && renderChatItem}
+                <span className={styles.chat}>
+                    <Dropdown ref={(ref) => { this._dropdown = ref; }}>
+                        <DropdownTrigger tabIndex={0} accessKey={OPEN_ACTIONS_AK}>
+                            <Button
+                                hideLabel
+                                aria-label={intl.formatMessage(intlMessages.actionsLabel)}
+                                className={styles.button}
+                                label={intl.formatMessage(intlMessages.actionsLabel)}
+                                icon="chat"
+                                color="default"
+                                ghost
+                                size="lg"
+                                onClick={() => null}
+                            />
+                        </DropdownTrigger>
+                        <DropdownContent placement="bottom right">
+                            <DropdownList>
+                                {activeChats.length >= 1 && renderChatItem}
+                            </DropdownList>
+                        </DropdownContent>
+                    </Dropdown>
                 </span>
                 <span
                     className={styles.participants}
@@ -124,4 +164,4 @@ class UserListHeader extends PureComponent {
 UserListHeader.propTypes = propTypes;
 UserListHeader.defaultProps = defaultProps;
 
-export default UserListHeader;
+export default withShortcutHelper(UserListHeader, 'openActions');

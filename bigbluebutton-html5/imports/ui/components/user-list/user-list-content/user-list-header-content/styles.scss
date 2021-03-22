@@ -5,16 +5,28 @@
     line-height: 8px;
 }
 
+.button {
+    margin: 0;
+    padding: 0;
+    i{
+        background-color: transparent;
+    }
+    i::before {
+        font-size: 23px;
+    }
+    border: none;
+    background-color: transparent;
+}
+
 .chat{
     flex: 1;
     margin: 0 10px 10px 10px;
     margin-left: 40px;
     margin-top: 7px;
     cursor: pointer;
-}
-
-.chat::hover {
-    color: grey;
+    .chat-list-item{
+        margin-left: 40px;
+    }
 }
 
 .participants{

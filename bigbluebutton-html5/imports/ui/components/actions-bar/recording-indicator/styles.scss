@@ -1,6 +1,39 @@
 @import "../../../stylesheets/variables/_all";
 @import '/imports/ui/stylesheets/mixins/_indicators';
 @import "../../../stylesheets/variables/typography";
+@import "/imports/ui/stylesheets/variables/_all";
+@import "/imports/ui/components/actions-bar/styles.scss";
+
+.imageSize {
+  height: 4rem;
+  @include mq($small-only) {
+    margin: auto 1rem;
+  }
+}
+
+.label {
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+  margin-top: .5rem;
+  color: inherit;
+
+  @include mq($small-only) {
+    margin-top: 0;
+    font-size: 90%;
+  }
+}
+
+.item {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+
+  @include mq($small-only) {
+    flex-direction: row;
+  }
+}
+
 
 .visuallyHidden {
   position: absolute;
@@ -35,7 +68,6 @@
 .recordingControlON {
   @extend %recordingControl;
 
-  padding: 5px;
   background-color: var(--color-primary);
   border: var(--border-size-large) solid var(--color-black);
 
@@ -48,7 +80,6 @@
 .recordingControlOFF {
   @extend %recordingControl;
 
-  padding: 7px;
   border: var(--border-size-small) solid var(--color-white);
   
   &:focus {

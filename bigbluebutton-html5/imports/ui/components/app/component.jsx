@@ -208,8 +208,6 @@ class App extends Component {
   renderPanel() {
     const { enableResize } = this.state;
     const { openPanel, isRTL } = this.props;
-
-    console.log(openPanel);
     return (
       openPanel !== 'chat' && (
       <PanelManager

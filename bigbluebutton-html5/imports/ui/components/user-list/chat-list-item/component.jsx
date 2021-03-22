@@ -40,21 +40,17 @@ const propTypes = {
   chatPanelOpen: PropTypes.bool.isRequired,
   shortcuts: PropTypes.string,
   isSameTabEnabled: PropTypes.bool,
-  updateRenderId: PropTypes.func,
 };
 
 const defaultProps = {
   shortcuts: '',
   isSameTabEnabled: false,
-  updateRenderId: () => {},
 };
 
-const handleClickToggleChat = (id, isSameTabEnabled, updateRenderId) => {
+const handleClickToggleChat = (id, isSameTabEnabled) => {
   if (isSameTabEnabled) {
-    console.log(isSameTabEnabled);
-    Session.set('openPanel', 'userList');
+    Session.set('openPanel', 'userlist');
     Session.set('idChatOpen', id);
-    updateRenderId(id);
   } else {
     Session.set(
       'openPanel',
@@ -80,7 +76,6 @@ const ChatListItem = (props) => {
     shortcuts: TOGGLE_CHAT_PUB_AK,
     chatPanelOpen,
     isSameTabEnabled,
-    updateRenderId,
   } = props;
 
   const isCurrentChat = chat.userId === activeChatId && chatPanelOpen;
@@ -96,7 +91,7 @@ const ChatListItem = (props) => {
         aria-expanded={isCurrentChat}
         tabIndex={tabIndex}
         accessKey={isPublicChat(chat) ? TOGGLE_CHAT_PUB_AK : null}
-        onClick={() => handleClickToggleChat(chat.userId, isSameTabEnabled, updateRenderId)}
+        onClick={() => handleClickToggleChat(chat.userId, isSameTabEnabled)}
         id="chat-toggle-button"
         aria-label={isPublicChat(chat) ? intl.formatMessage(intlMessages.titlePublic) : chat.name}
       >
@@ -113,7 +108,7 @@ const ChatListItem = (props) => {
                 />
               )}
           </div>
-          {/* <div className={styles.chatName}>
+          <div className={styles.chatName}>
             {!compact
               ? (
                 <span className={styles.chatNameMain}>
@@ -121,7 +116,7 @@ const ChatListItem = (props) => {
                     ? intl.formatMessage(intlMessages.titlePublic) : chat.name}
                 </span>
               ) : null}
-          </div> */}
+          </div>
           {(chat.unreadCounter > 0)
             ? (
               <ChatUnreadCounter

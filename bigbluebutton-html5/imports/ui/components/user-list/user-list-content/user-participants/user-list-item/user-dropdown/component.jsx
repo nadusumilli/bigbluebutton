@@ -164,7 +164,7 @@ class UserDropdown extends PureComponent {
     this.makeDropdownItem = this.makeDropdownItem.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.title = _.uniqueId('dropdown-title-');
     this.seperator = _.uniqueId('action-separator-');
   }
@@ -324,7 +324,7 @@ class UserDropdown extends PureComponent {
         intl.formatMessage(messages.ChatLabel),
         () => {
           getGroupChatPrivate(currentUser.userId, user);
-          Session.set('openPanel', 'chat');
+          Session.set('openPanel', 'userlist');
           Session.set('idChatOpen', user.userId);
         },
         'chat',

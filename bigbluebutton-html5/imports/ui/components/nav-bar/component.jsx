@@ -38,13 +38,12 @@ const defaultProps = {
 class NavBar extends PureComponent {
   static handleToggleUserList() {
     const panelName = Session.get('openPanel');
-    if (panelName === 'chat' || panelName === 'userList') {
+    if (panelName === 'chat' || panelName === 'userlist') {
       Session.set('openPanel', '');
       Session.set('idChatOpen', '');
     } else {
       Session.set('openPanel', Session.get('openPanel') || 'userlist');
     }
-    // Session.set('idChatOpen', '');
   }
 
   render() {
@@ -100,9 +99,6 @@ class NavBar extends PureComponent {
               viewBox="0 0 163.000000 67.000000"
               preserveAspectRatio="xMidYMid meet"
             >
-              <metadata>
-              Created by potrace 1.16, written by Peter Selinger 2001-2019
-              </metadata>
               <g
                 transform="translate(0.000000,67.000000) scale(0.100000,-0.100000)"
                 fill="#000000"

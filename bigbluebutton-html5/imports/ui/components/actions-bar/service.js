@@ -4,6 +4,7 @@ import { makeCall } from '/imports/ui/services/api';
 import Meetings from '/imports/api/meetings';
 import Breakouts from '/imports/api/breakouts';
 import { getVideoUrl } from '/imports/ui/components/external-video-player/service';
+import { EMOJI_STATUSES } from '/imports/utils/statuses';
 
 const USER_CONFIG = Meteor.settings.public.user;
 const ROLE_MODERATOR = USER_CONFIG.role_moderator;
@@ -16,6 +17,18 @@ const getBreakouts = () => Breakouts.find({ parentMeetingId: Auth.meetingID })
 const currentBreakoutUsers = user => !Breakouts.findOne({
   'joinedUsers.userId': new RegExp(`^${user.userId}`),
 });
+
+const normalizeEmojiName = emoji => (
+  emoji in EMOJI_STATUSES ? EMOJI_STATUSES[emoji] : emoji
+);
+
+const setEmojiStatus = (userId, emoji) => {
+  const statusAvailable = (Object.keys(EMOJI_STATUSES).includes(emoji));
+
+  return statusAvailable
+    ? makeCall('setEmojiStatus', Auth.userID, emoji)
+    : makeCall('setEmojiStatus', userId, 'none');
+};
 
 const filterBreakoutUsers = filter => users => users.filter(filter);
 
@@ -46,4 +59,8 @@ export default {
   getUsersNotAssigned,
   takePresenterRole,
   isSharingVideo: () => getVideoUrl(),
+  setEmojiStatus,
+  normalizeEmojiName,
+  getEmojiList: () => EMOJI_STATUSES,
+  getEmoji: () => Users.findOne({ userId: Auth.userID }, { fields: { emoji: 1 } }).emoji,
 };

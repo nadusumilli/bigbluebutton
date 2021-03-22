@@ -33,7 +33,7 @@ export default class Media extends Component {
     this.refContainer = React.createRef();
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     window.dispatchEvent(new Event('resize'));
   }
 

@@ -6,6 +6,6 @@ import ChatListItem from './component';
 const ChatListItemContainer = props => <ChatListItem {...props} />;
 
 export default withTracker(() => ({
-  activeChatId: Session.get('idChatOpen'),
+  activeChatId: Session.get('idChatOpen') || '',
   chatPanelOpen: Session.get('openPanel') === 'chat',
 }))(ChatListItemContainer);
