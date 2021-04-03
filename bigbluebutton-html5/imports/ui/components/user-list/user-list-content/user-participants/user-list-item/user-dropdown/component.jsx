@@ -331,7 +331,7 @@ class UserDropdown extends PureComponent {
       ));
     }
 
-    if (allowedToResetStatus && user.emoji !== 'none' && isMeteorConnected) {
+    if (allowedToResetStatus && user.emoji !== 'none' && user.emoji !== 'spotlight' && isMeteorConnected) {
       actions.push(this.makeDropdownItem(
         'clearStatus',
         intl.formatMessage(messages.ClearStatusLabel),
@@ -339,6 +339,25 @@ class UserDropdown extends PureComponent {
         'clear_status',
       ));
     }
+
+    if (user.emoji !== 'spotlight' && isMeteorConnected) {
+      actions.push(this.makeDropdownItem(
+        'spotlight',
+        'Spotlight',
+        () => this.onActionsHide(setEmojiStatus(user.userId, 'spotlight')),
+        'spotlight',
+      ));
+    }
+
+    if (allowedToResetStatus && user.emoji === 'spotlight' && isMeteorConnected) {
+      actions.push(this.makeDropdownItem(
+        'clearSpotlight',
+        'Clear Spotlight',
+        () => this.onActionsHide(setEmojiStatus(user.userId, 'none')),
+        'clear_status',
+      ));
+    }
+
 
     if (allowedToMuteAudio && isMeteorConnected && !meetingIsBreakout) {
       actions.push(this.makeDropdownItem(

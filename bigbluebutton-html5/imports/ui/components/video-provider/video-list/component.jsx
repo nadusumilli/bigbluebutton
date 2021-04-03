@@ -20,6 +20,7 @@ const propTypes = {
   swapLayout: PropTypes.bool.isRequired,
   numberOfPages: PropTypes.number.isRequired,
   currentVideoPageIndex: PropTypes.number.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 const intlMessages = defineMessages({
@@ -55,7 +56,14 @@ const intlMessages = defineMessages({
   },
 });
 
-const findOptimalGrid = (canvasWidth, canvasHeight, gutter, aspectRatio, numItems, columns = 1) => {
+const findOptimalGrid = (
+  canvasWidth,
+  canvasHeight,
+  gutter,
+  aspectRatio,
+  numItems,
+  columns = 1,
+) => {
   const rows = Math.ceil(numItems / columns);
   const gutterTotalWidth = (columns - 1) * gutter;
   const gutterTotalHeight = (rows - 1) * gutter;
@@ -63,16 +71,16 @@ const findOptimalGrid = (canvasWidth, canvasHeight, gutter, aspectRatio, numItem
   const usableHeight = canvasHeight - gutterTotalHeight;
   let cellWidth = Math.floor(usableWidth / columns);
   let cellHeight = Math.ceil(cellWidth / aspectRatio);
-  if ((cellHeight * rows) > usableHeight) {
+  if (cellHeight * rows > usableHeight) {
     cellHeight = Math.floor(usableHeight / rows);
     cellWidth = Math.ceil(cellHeight * aspectRatio);
   }
   return {
     columns,
     rows,
-    width: (cellWidth * columns) + gutterTotalWidth,
-    height: (cellHeight * rows) + gutterTotalHeight,
-    filledArea: (cellWidth * cellHeight) * numItems,
+    width: cellWidth * columns + gutterTotalWidth,
+    height: cellHeight * rows + gutterTotalHeight,
+    filledArea: cellWidth * cellHeight * numItems,
   };
 };
 
@@ -84,11 +92,7 @@ class VideoList extends Component {
 
     this.state = {
       focusedId: false,
-      optimalGrid: {
-        cols: 1,
-        rows: 1,
-        filledArea: 0,
-      },
+      focusedVideoWidth: '300',
       autoplayBlocked: false,
       mirroredCameras: [],
     };
@@ -97,11 +101,14 @@ class VideoList extends Component {
     this.grid = null;
     this.canvas = null;
     this.failedMediaElements = [];
-    this.handleCanvasResize = _.throttle(this.handleCanvasResize.bind(this), 66,
+    this.handleCanvasResize = _.throttle(
+      this.handleCanvasResize.bind(this),
+      66,
       {
         leading: true,
         trailing: true,
-      });
+      },
+    );
     this.setOptimalGrid = this.setOptimalGrid.bind(this);
     this.handleAllowAutoplay = this.handleAllowAutoplay.bind(this);
     this.handlePlayElementFailed = this.handlePlayElementFailed.bind(this);
@@ -110,12 +117,10 @@ class VideoList extends Component {
 
   componentDidMount() {
     const { webcamDraggableDispatch } = this.props;
-    webcamDraggableDispatch(
-      {
-        type: 'setVideoListRef',
-        value: this.grid,
-      },
-    );
+    webcamDraggableDispatch({
+      type: 'setVideoListRef',
+      value: this.grid,
+    });
 
     this.handleCanvasResize();
     window.addEventListener('resize', this.handleCanvasResize, false);
@@ -129,42 +134,39 @@ class VideoList extends Component {
 
   setOptimalGrid() {
     const { streams } = this.props;
-    let numItems = streams.length;
+    const numItems = streams.length;
     if (numItems < 1 || !this.canvas || !this.grid) {
       return;
     }
-    const { focusedId } = this.state;
-    const { width: canvasWidth, height: canvasHeight } = this.canvas.getBoundingClientRect();
-
-    const gridGutter = parseInt(window.getComputedStyle(this.grid)
-      .getPropertyValue('grid-row-gap'), 10);
-    const hasFocusedItem = numItems > 2 && focusedId;
-    // Has a focused item so we need +3 cells
-    if (hasFocusedItem) {
-      numItems += 3;
-    }
-    const optimalGrid = _.range(1, numItems + 1)
-      .reduce((currentGrid, col) => {
-        const testGrid = findOptimalGrid(
-          canvasWidth, canvasHeight, gridGutter,
-          ASPECT_RATIO, numItems, col,
-        );
-        // We need a minimun of 2 rows and columns for the focused
-        const focusedConstraint = hasFocusedItem ? testGrid.rows > 1 && testGrid.columns > 1 : true;
-        const betterThanCurrent = testGrid.filledArea > currentGrid.filledArea;
-        return focusedConstraint && betterThanCurrent ? testGrid : currentGrid;
-      }, { filledArea: 0 });
+    // const { focusedId } = this.state;
+    // const focusedId = users && users.filter(user => user.emoji === 'spotlight').length > 0;
+    const { height: canvasHeight } = this.canvas.getBoundingClientRect();
+    const { height: gridHeight } = this.grid.getBoundingClientRect();
+    const focusedVideoWidth = (canvasHeight - gridHeight - 15) * ASPECT_RATIO;
+    // webcamDraggableDispatch(
+    //   {
+    //     type: 'setOptimalGrid',
+    //     value: optimalGrid,
+    //   },
+    // );
     this.setState({
-      optimalGrid,
+      focusedVideoWidth,
     });
+  }
+
+  getFocusedVideo() {
+    return this.renderVideoList(true);
   }
 
   handleAllowAutoplay() {
     const { autoplayBlocked } = this.state;
 
-    logger.info({
-      logCode: 'video_provider_autoplay_allowed',
-    }, 'Video media autoplay allowed by the user');
+    logger.info(
+      {
+        logCode: 'video_provider_autoplay_allowed',
+      },
+      'Video media autoplay allowed by the user',
+    );
 
     this.autoplayWasHandled = true;
     window.removeEventListener('videoPlayFailed', this.handlePlayElementFailed);
@@ -173,17 +175,25 @@ class VideoList extends Component {
       if (mediaElement) {
         const played = playAndRetry(mediaElement);
         if (!played) {
-          logger.error({
-            logCode: 'video_provider_autoplay_handling_failed',
-          }, 'Video autoplay handling failed to play media');
+          logger.error(
+            {
+              logCode: 'video_provider_autoplay_handling_failed',
+            },
+            'Video autoplay handling failed to play media',
+          );
         } else {
-          logger.info({
-            logCode: 'video_provider_media_play_success',
-          }, 'Video media played successfully');
+          logger.info(
+            {
+              logCode: 'video_provider_media_play_success',
+            },
+            'Video media played successfully',
+          );
         }
       }
     }
-    if (autoplayBlocked) { this.setState({ autoplayBlocked: false }); }
+    if (autoplayBlocked) {
+      this.setState({ autoplayBlocked: false });
+    }
   }
 
   handlePlayElementFailed(e) {
@@ -193,18 +203,24 @@ class VideoList extends Component {
     e.stopPropagation();
     this.failedMediaElements.push(mediaElement);
     if (!autoplayBlocked && !this.autoplayWasHandled) {
-      logger.info({
-        logCode: 'video_provider_autoplay_prompt',
-      }, 'Prompting user for action to play video media');
+      logger.info(
+        {
+          logCode: 'video_provider_autoplay_prompt',
+        },
+        'Prompting user for action to play video media',
+      );
       this.setState({ autoplayBlocked: true });
     }
   }
 
   handleVideoFocus(id) {
     const { focusedId } = this.state;
-    this.setState({
-      focusedId: focusedId !== id ? id : false,
-    }, this.handleCanvasResize);
+    this.setState(
+      {
+        focusedId: focusedId !== id ? id : false,
+      },
+      this.handleCanvasResize,
+    );
     window.dispatchEvent(new Event('videoFocusChange'));
   }
 
@@ -212,7 +228,7 @@ class VideoList extends Component {
     const { mirroredCameras } = this.state;
     if (this.cameraIsMirrored(cameraId)) {
       this.setState({
-        mirroredCameras: mirroredCameras.filter(x => x != cameraId),
+        mirroredCameras: mirroredCameras.filter(x => x !== cameraId),
       });
     } else {
       this.setState({
@@ -284,49 +300,99 @@ class VideoList extends Component {
     );
   }
 
-  renderVideoList() {
+  renderVideoList(getFocused = false) {
     const {
-      intl,
-      streams,
-      onMount,
-      swapLayout,
+      intl, streams, onMount, swapLayout, users,
     } = this.props;
-    const { focusedId } = this.state;
+    const { focusedId, focusedVideoWidth } = this.state;
 
     const numOfStreams = streams.length;
-    return streams.map((stream) => {
+    const filteredStreams = streams.filter((stream) => {
+      const { userId } = stream;
+      let enableSpotlight = false;
+      if (getFocused) {
+        if (users && users.length > 0) {
+          const spotlightUsers = users.filter(
+            user => user.emoji === 'spotlight',
+          );
+
+          if (spotlightUsers.length > 0) {
+            enableSpotlight = spotlightUsers[0].extId === userId;
+          }
+        }
+        return enableSpotlight;
+      }
+      if (users && users.length > 0) {
+        const spotlightUsers = users.filter(
+          user => user.emoji === 'spotlight',
+        );
+
+        if (spotlightUsers.length > 0) {
+          enableSpotlight = spotlightUsers[0].extId !== userId;
+        } else {
+          return true;
+        }
+      }
+      return enableSpotlight;
+    });
+    if (filteredStreams.length === 0) {
+      return null;
+    }
+
+    users.sort((first, second) => second.loginTime - first.loginTime);
+
+    const sortedStreams = [];
+    users.forEach((user) => {
+      const stream = filteredStreams.find(s => s.userId === user.extId);
+      if (stream) {
+        sortedStreams.push(stream);
+      }
+    });
+
+    return sortedStreams.map((stream) => {
       const { cameraId, userId, name } = stream;
       const isFocused = focusedId === cameraId;
+      this.handleCanvasResize();
+
       const isFocusedIntlKey = !isFocused ? 'focus' : 'unfocus';
-      const isMirrored = this.cameraIsMirrored(cameraId);
-      let actions = [{
-        label: intl.formatMessage(intlMessages['mirrorLabel']),
-        description: intl.formatMessage(intlMessages['mirrorDesc']),
-        onClick: () => this.mirrorCamera(cameraId),
-      }];
+      let actions = [];
 
       if (numOfStreams > 2) {
-        actions.push({
-          label: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Label`]),
-          description: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Desc`]),
-          onClick: () => this.handleVideoFocus(cameraId),
-        });
+        actions = [
+          {
+            label: intl.formatMessage(intlMessages[`${isFocusedIntlKey}Label`]),
+            description: intl.formatMessage(
+              intlMessages[`${isFocusedIntlKey}Desc`],
+            ),
+            onClick: () => this.handleVideoFocus(cameraId),
+          },
+        ];
       }
+
+      /*
+            style={enableSpotlight && numOfStreams > 2 ? {
+              gridColumn: `1 / span ${this.state.optimalGrid.columns}`,
+              gridRow: `1 / span ${this.state.optimalGrid.rows}`
+            } : {}}
+            */
+      const focusedVideoWidthtStyle = getFocused
+        ? { width: focusedVideoWidth }
+        : {};
 
       return (
         <div
           key={cameraId}
           className={cx({
-            [styles.videoListItem]: true,
-            [styles.focused]: focusedId === cameraId && numOfStreams > 2,
+            [styles.videoListItem]: !getFocused,
+            [styles.focusedVideoListItem]: getFocused,
           })}
+          style={focusedVideoWidthtStyle}
         >
           <VideoListItemContainer
             numOfStreams={numOfStreams}
             cameraId={cameraId}
             userId={userId}
             name={name}
-            mirrored={isMirrored}
             actions={actions}
             onMount={(videoRef) => {
               this.handleCanvasResize();
@@ -358,7 +424,6 @@ class VideoList extends Component {
         }}
         className={canvasClassName}
       >
-
         {this.renderPreviousPageButton()}
 
         {!streams.length ? null : (
@@ -377,16 +442,19 @@ class VideoList extends Component {
             {this.renderVideoList()}
           </div>
         )}
-        { !autoplayBlocked ? null : (
+        {!autoplayBlocked ? null : (
           <AutoplayOverlay
-            autoplayBlockedDesc={intl.formatMessage(intlMessages.autoplayBlockedDesc)}
-            autoplayAllowLabel={intl.formatMessage(intlMessages.autoplayAllowLabel)}
+            autoplayBlockedDesc={intl.formatMessage(
+              intlMessages.autoplayBlockedDesc,
+            )}
+            autoplayAllowLabel={intl.formatMessage(
+              intlMessages.autoplayAllowLabel,
+            )}
             handleAllowAutoplay={this.handleAllowAutoplay}
           />
         )}
 
         {this.renderNextPageButton()}
-
       </div>
     );
   }
